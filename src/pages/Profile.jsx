@@ -1,22 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserProfile } from "../services/allAPI";
+import { BiUserCircle } from "react-icons/bi";
 
 const Profile = () => {
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState({});
   const navigate = useNavigate();
   const fetchUser = async () => {
     try {
-      if (!localStorage.getItem("token")) {
-        navigate("/");
-      } else {
+      console.log(localStorage.getItem("userId"));
+      
         const result = await getUserProfile(
-          localStorage.getItem("token").JSON().id
-        );
-        if (result.status == 200) {
+          localStorage.getItem("userId")
+      );
+      console.log(result);
+      
+        if (result.status === 200) {
           setUserData(result.data);
         }
-      }
+      
     } catch (err) {
       console.log(err);
     }
@@ -24,21 +26,24 @@ const Profile = () => {
 
   useEffect(() => {
     fetchUser();
+    
+    
   }, []);
 
   return (
     <>
-      <div className="form-container ">
-        <h1>User Profile</h1>
-        <div className="form-container ">
-          {userData?.length > 0 &&
-            userData.map((details) => (
-              <>
-                <p>Username: {details.username}</p>
-                <p>Name:{details.name}</p>
-                <p>Email: {details.email}</p>
-              </>
-            ))}
+      <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center flex-col border p-5 rounded">
+          <BiUserCircle className="text-5xl text-cyan-900"/>
+          <h1 className="text-3xl text-center font-bold">USER PROFILE</h1>
+          <div className="flex justify-center items-center flex-col">
+          
+                  <p className="text-xl text-gray-800 my-1">Username: {userData.username}</p>
+                  <p className="text-xl text-gray-800 my-1">Name:{userData.name}</p>
+                  <p className="text-xl text-gray-800 my-1">Email: {userData.email}</p>
+                
+              
+          </div>
         </div>
       </div>
     </>
